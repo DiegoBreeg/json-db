@@ -14,7 +14,7 @@ const validator = new object_validatordb_1.ObjectValidator();
 class Model {
     constructor(modelName, schema) {
         this.modelName = modelName;
-        this.dataPath = path_1.default.resolve(appDir, `${this.modelName}.json`);
+        this.dataPath = path_1.default.resolve(appDir, './data', `${this.modelName}.json`);
         this.schema = schema;
         if (!fs_1.default.existsSync(path_1.default.resolve(appDir, './data'))) {
             fs_1.default.mkdirSync(path_1.default.resolve(appDir, './data'));

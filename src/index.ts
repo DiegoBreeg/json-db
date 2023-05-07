@@ -21,7 +21,7 @@ class Model<T>{
 
     constructor(modelName: string, schema: Schema) {
         this.modelName = modelName
-        this.dataPath = path.resolve(appDir, `${this.modelName}.json`)
+        this.dataPath = path.resolve(appDir, './data', `${this.modelName}.json`)
         this.schema = schema
 
         if (!fs.existsSync(path.resolve(appDir, './data'))) {
