@@ -1,0 +1,21 @@
+{
+  "name": "json-db",
+  "version": "1.0.0",
+  "description": "Methods to store data on format files",
+  "main": "./dist/index.ts",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "start": "npx ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["json-db", "json", "database", "json database", "json-database", "local database"],
+  "author": "diegobreeg@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "object-validatordb": "^1.0.34"
+  }
+}
