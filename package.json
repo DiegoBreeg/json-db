@@ -1,5 +1,5 @@
 {
-  "name": "json-db",
+  "name": "json-database-db",
   "version": "1.0.0",
   "description": "Methods to store data on format files",
   "main": "./dist/index.ts",
