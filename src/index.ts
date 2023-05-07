@@ -2,6 +2,9 @@ import path from 'path'
 import fs from 'fs'
 import { ObjectValidator } from "object-validatordb"
 
+const filename = require.main?.filename || __dirname
+const appDir = path.dirname(filename)
+
 const validator = new ObjectValidator()
 
 type SchemaConfig = {
@@ -18,11 +21,11 @@ class Model<T>{
 
     constructor(modelName: string, schema: Schema) {
         this.modelName = modelName
-        this.dataPath = path.resolve(__dirname, 'data', `${this.modelName}.json`)
+        this.dataPath = path.resolve(appDir, `${this.modelName}.json`)
         this.schema = schema
 
-        if(!fs.existsSync(path.resolve(__dirname, './data'))) {
-            fs.mkdirSync(path.resolve(__dirname, './data'))
+        if (!fs.existsSync(path.resolve(appDir, './data'))) {
+            fs.mkdirSync(path.resolve(appDir, './data'))
         }
 
         if (!fs.existsSync(this.dataPath))

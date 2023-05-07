@@ -2,19 +2,22 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Model = void 0;
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const object_validatordb_1 = require("object-validatordb");
+const filename = ((_a = require.main) === null || _a === void 0 ? void 0 : _a.filename) || __dirname;
+const appDir = path_1.default.dirname(filename);
 const validator = new object_validatordb_1.ObjectValidator();
 class Model {
     constructor(modelName, schema) {
         this.modelName = modelName;
-        this.dataPath = path_1.default.resolve(__dirname, 'data', `${this.modelName}.json`);
+        this.dataPath = path_1.default.resolve(appDir, `${this.modelName}.json`);
         this.schema = schema;
-        if (!fs_1.default.existsSync(path_1.default.resolve(__dirname, './data'))) {
-            fs_1.default.mkdirSync(path_1.default.resolve(__dirname, './data'));
+        if (!fs_1.default.existsSync(path_1.default.resolve(appDir, './data'))) {
+            fs_1.default.mkdirSync(path_1.default.resolve(appDir, './data'));
         }
         if (!fs_1.default.existsSync(this.dataPath))
             fs_1.default.writeFileSync(this.dataPath, JSON.stringify([]));
