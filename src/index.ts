@@ -18,11 +18,11 @@ class Model<T>{
 
     constructor(modelName: string, schema: Schema) {
         this.modelName = modelName
-        this.dataPath = path.resolve(__filename, '../', 'data', `${this.modelName}.json`)
+        this.dataPath = path.resolve(__dirname, 'data', `${this.modelName}.json`)
         this.schema = schema
 
-        if(!fs.existsSync(path.resolve(__filename, '../', './data'))) {
-            fs.mkdirSync(path.resolve(__filename, '../', './data'))
+        if(!fs.existsSync(path.resolve(__dirname, './data'))) {
+            fs.mkdirSync(path.resolve(__dirname, './data'))
         }
 
         if (!fs.existsSync(this.dataPath))

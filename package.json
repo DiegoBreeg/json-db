@@ -1,6 +1,6 @@
 {
   "name": "json-database-db",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Methods to store data on format files",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

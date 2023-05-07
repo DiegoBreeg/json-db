@@ -11,10 +11,10 @@ const validator = new object_validatordb_1.ObjectValidator();
 class Model {
     constructor(modelName, schema) {
         this.modelName = modelName;
-        this.dataPath = path_1.default.resolve(__filename, '../', 'data', `${this.modelName}.json`);
+        this.dataPath = path_1.default.resolve(__dirname, 'data', `${this.modelName}.json`);
         this.schema = schema;
-        if (!fs_1.default.existsSync(path_1.default.resolve(__filename, '../', './data'))) {
-            fs_1.default.mkdirSync(path_1.default.resolve(__filename, '../', './data'));
+        if (!fs_1.default.existsSync(path_1.default.resolve(__dirname, './data'))) {
+            fs_1.default.mkdirSync(path_1.default.resolve(__dirname, './data'));
         }
         if (!fs_1.default.existsSync(this.dataPath))
             fs_1.default.writeFileSync(this.dataPath, JSON.stringify([]));
