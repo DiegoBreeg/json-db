@@ -13,10 +13,15 @@ declare class Model<T> {
     private isDataTypeValid;
     private getUniqueFields;
     private isDataKeysValid;
+    private findData;
+    private replaceData;
+    private updateData;
     Find(filter: object): T | {};
     FindAll(): T[];
     Save(dataToSave: T): T;
-    Delete(filter: object): T | {};
+    Delete(filter: {
+        [key: string]: any;
+    }): T | {};
     FindAndUpdate(filter: {
         [key: string]: any;
     }, data: {

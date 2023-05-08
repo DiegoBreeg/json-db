@@ -40,16 +40,37 @@ class Model {
     isDataKeysValid(data) {
         return JSON.stringify(Object.keys(this.schema)) === JSON.stringify(Object.keys(data));
     }
-    Find(filter) {
-        const storedData = fs_1.default.readFileSync(this.dataPath, 'utf8');
-        const dataList = JSON.parse(storedData);
-        const foundData = dataList.find((ell) => {
+    findData(dataList, filter) {
+        return dataList.find((ell) => {
             for (const [key, value] of Object.entries(filter)) {
                 if (ell[key] !== value)
                     return false;
             }
             return true;
         });
+    }
+    replaceData(dataList, foundData, filter) {
+        dataList.forEach((ell, index) => {
+            for (const [key, value] of Object.entries(filter)) {
+                if (ell[key] !== value)
+                    return;
+            }
+            dataList[index] = foundData;
+        });
+    }
+    updateData(foundData, newData) {
+        for (const [key, value] of Object.entries(newData)) {
+            if (!foundData[key])
+                throw new Error(`The key ${key} do not exist on filtered object`);
+            if (typeof foundData[key] !== typeof value)
+                throw new Error(`The type of data found is different from the type provided`);
+            foundData[key] = value;
+        }
+    }
+    Find(filter) {
+        const storedData = fs_1.default.readFileSync(this.dataPath, 'utf8');
+        const dataList = JSON.parse(storedData);
+        const foundData = this.findData(dataList, filter);
         return foundData || {};
     }
     FindAll() {
@@ -98,29 +119,11 @@ class Model {
     FindAndUpdate(filter, data) {
         const storedData = fs_1.default.readFileSync(this.dataPath, 'utf8');
         const dataList = JSON.parse(storedData);
-        const foundData = dataList.find((ell) => {
-            for (const [key, value] of Object.entries(filter)) {
-                if (ell[key] !== value)
-                    return false;
-            }
-            return true;
-        });
+        const foundData = this.findData(dataList, filter);
         if (!foundData)
             throw new Error(`Filter data not found`);
-        for (const [key, value] of Object.entries(data)) {
-            if (!foundData[key])
-                throw new Error(`The key ${key} do not exist on filtered object`);
-            if (typeof foundData[key] !== typeof value)
-                throw new Error(`The type of data found is different from the type provided`);
-            foundData[key] = value;
-        }
-        dataList.forEach((ell, index) => {
-            for (const [key, value] of Object.entries(filter)) {
-                if (ell[key] !== value)
-                    return;
-            }
-            dataList[index] = foundData;
-        });
+        this.updateData(foundData, data);
+        this.replaceData(dataList, foundData, filter);
         fs_1.default.writeFileSync(this.dataPath, JSON.stringify(dataList));
         return foundData;
     }

@@ -56,18 +56,41 @@ class Model<T>{
         return JSON.stringify(Object.keys(this.schema)) === JSON.stringify(Object.keys(data))
     }
 
+    private findData(dataList: T[], filter: { [key: string]: any }): any {
+        return dataList.find((ell: any) => {
+            for (const [key, value] of Object.entries(filter)) {
+                if (ell[key] !== value)
+                    return false
+            }
+            return true
+        })
+    }
+
+    private replaceData(dataList: T[], foundData: any, filter: { [key: string]: any }) {
+        dataList.forEach((ell: any, index) => {
+            for (const [key, value] of Object.entries(filter)) {
+                if (ell[key] !== value)
+                    return
+            }
+            dataList[index] = foundData
+        })
+    }
+
+    private updateData(foundData: any, newData: { [key: string]: any }) {
+        for (const [key, value] of Object.entries(newData)) {
+            if (!foundData[key])
+                throw new Error(`The key ${key} do not exist on filtered object`)
+            if (typeof foundData[key] !== typeof value)
+                throw new Error(`The type of data found is different from the type provided`)
+            foundData[key] = value
+        }
+    }
+
     public Find(filter: object): T | {} {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
         const dataList: T[] = JSON.parse(storedData)
 
-        const foundData = dataList.find((ell: any) => {
-            for (const [key, value] of Object.entries(filter as object)) {
-                if (ell[key] !== value)
-                    return false
-            }
-
-            return true
-        })
+        const foundData = this.findData(dataList, filter)
 
         return foundData || {}
     }
@@ -107,12 +130,12 @@ class Model<T>{
         return dataToSave
     }
 
-    public Delete(filter: object): T | {} {
+    public Delete(filter: { [key: string]: any }): T | {} {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
         const dataList: T[] = JSON.parse(storedData)
         const filteredDataList: T[] = []
         dataList.forEach((ell: any) => {
-            for (const [key, value] of Object.entries(filter as object)) {
+            for (const [key, value] of Object.entries(filter)) {
                 if (ell[key] == value)
                     return
             }
@@ -127,36 +150,17 @@ class Model<T>{
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
         const dataList: T[] = JSON.parse(storedData)
 
-        const foundData: any = dataList.find((ell: any) => {
-            for (const [key, value] of Object.entries(filter as object)) {
-                if (ell[key] !== value)
-                    return false
-            }
-
-            return true
-        })
+        const foundData = this.findData(dataList, filter)
 
         if (!foundData)
             throw new Error(`Filter data not found`)
-    
-        for (const [key, value] of Object.entries(data)) {
-            if (!foundData[key])
-                throw new Error(`The key ${key} do not exist on filtered object`)
-            if (typeof foundData[key] !== typeof value)
-                throw new Error(`The type of data found is different from the type provided`)
-            foundData[key] = value            
 
-        }
+        this.updateData(foundData, data)
 
-        dataList.forEach((ell: any, index) => {
-            for (const [key, value] of Object.entries(filter as object)) {
-                if (ell[key] !== value)
-                    return
-            }
-            dataList[index] = foundData           
-        })
-        
+        this.replaceData(dataList, foundData, filter)
+
         fs.writeFileSync(this.dataPath, JSON.stringify(dataList))
+
         return foundData
     }
 }
