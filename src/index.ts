@@ -122,6 +122,43 @@ class Model<T>{
         fs.writeFileSync(this.dataPath, dataToStore)
         return {}
     }
+
+    public FindAndUpdate(filter: { [key: string]: any }, data: { [key: string]: any }) {
+        const storedData = fs.readFileSync(this.dataPath, 'utf8')
+        const dataList: T[] = JSON.parse(storedData)
+
+        const foundData: any = dataList.find((ell: any) => {
+            for (const [key, value] of Object.entries(filter as object)) {
+                if (ell[key] !== value)
+                    return false
+            }
+
+            return true
+        })
+
+        if (!foundData)
+            throw new Error(`Filter data not found`)
+    
+        for (const [key, value] of Object.entries(data)) {
+            if (!foundData[key])
+                throw new Error(`The key ${key} do not exist on filtered object`)
+            if (typeof foundData[key] !== typeof value)
+                throw new Error(`The type of data found is different from the type provided`)
+            foundData[key] = value            
+
+        }
+
+        dataList.forEach((ell: any, index) => {
+            for (const [key, value] of Object.entries(filter as object)) {
+                if (ell[key] !== value)
+                    return
+            }
+            dataList[index] = foundData           
+        })
+        
+        fs.writeFileSync(this.dataPath, JSON.stringify(dataList))
+        return foundData
+    }
 }
 
 export { Model, SchemaConfig, Schema }

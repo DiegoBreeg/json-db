@@ -17,5 +17,10 @@ declare class Model<T> {
     FindAll(): T[];
     Save(dataToSave: T): T;
     Delete(filter: object): T | {};
+    FindAndUpdate(filter: {
+        [key: string]: any;
+    }, data: {
+        [key: string]: any;
+    }): any;
 }
 export { Model, SchemaConfig, Schema };

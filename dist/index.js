@@ -95,5 +95,34 @@ class Model {
         fs_1.default.writeFileSync(this.dataPath, dataToStore);
         return {};
     }
+    FindAndUpdate(filter, data) {
+        const storedData = fs_1.default.readFileSync(this.dataPath, 'utf8');
+        const dataList = JSON.parse(storedData);
+        const foundData = dataList.find((ell) => {
+            for (const [key, value] of Object.entries(filter)) {
+                if (ell[key] !== value)
+                    return false;
+            }
+            return true;
+        });
+        if (!foundData)
+            throw new Error(`Filter data not found`);
+        for (const [key, value] of Object.entries(data)) {
+            if (!foundData[key])
+                throw new Error(`The key ${key} do not exist on filtered object`);
+            if (typeof foundData[key] !== typeof value)
+                throw new Error(`The type of data found is different from the type provided`);
+            foundData[key] = value;
+        }
+        dataList.forEach((ell, index) => {
+            for (const [key, value] of Object.entries(filter)) {
+                if (ell[key] !== value)
+                    return;
+            }
+            dataList[index] = foundData;
+        });
+        fs_1.default.writeFileSync(this.dataPath, JSON.stringify(dataList));
+        return foundData;
+    }
 }
 exports.Model = Model;
