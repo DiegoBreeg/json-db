@@ -14,7 +14,7 @@ type SchemaConfig = {
 
 type Schema = { [key: string]: SchemaConfig }
 
-class Model<T>{
+class Model{
     public dataPath
     public modelName
     public schema: Schema
@@ -56,7 +56,7 @@ class Model<T>{
         return JSON.stringify(Object.keys(this.schema)) === JSON.stringify(Object.keys(data))
     }
 
-    private findData(dataList: T[], filter: { [key: string]: any }): any {
+    private findData(dataList: any[], filter: { [key: string]: any }): any {
         return dataList.find((ell: any) => {
             for (const [key, value] of Object.entries(filter)) {
                 if (ell[key] !== value)
@@ -66,7 +66,7 @@ class Model<T>{
         })
     }
 
-    private replaceData(dataList: T[], foundData: any, filter: { [key: string]: any }) {
+    private replaceData(dataList: any[], foundData: any, filter: { [key: string]: any }) {
         dataList.forEach((ell: any, index) => {
             for (const [key, value] of Object.entries(filter)) {
                 if (ell[key] !== value)
@@ -86,23 +86,23 @@ class Model<T>{
         }
     }
 
-    public Find(filter: object): T | {} {
+    public Find(filter: object): any | {} {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
-        const dataList: T[] = JSON.parse(storedData)
+        const dataList: any[] = JSON.parse(storedData)
 
         const foundData = this.findData(dataList, filter)
 
         return foundData || {}
     }
 
-    public FindAll(): T[] {
+    public FindAll(): any[] {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
-        const dataList: T[] = JSON.parse(storedData)
+        const dataList: any[] = JSON.parse(storedData)
 
         return dataList
     }
 
-    public Save(dataToSave: T): T {
+    public Save(dataToSave: any): any {
         if (!this.isDataKeysValid(dataToSave))
             throw new Error(`Data Kyes is different from the schema Keys`)
 
@@ -116,7 +116,7 @@ class Model<T>{
         }
 
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
-        const dataList: T[] = JSON.parse(storedData)
+        const dataList: any[] = JSON.parse(storedData)
         const uniqueFields: String[] = this.getUniqueFields(dataToSave)
         dataList.forEach((dataItem: any) => {
             uniqueFields.forEach((uniqueField: any) => {
@@ -130,10 +130,10 @@ class Model<T>{
         return dataToSave
     }
 
-    public Delete(filter: { [key: string]: any }): T | {} {
+    public Delete(filter: { [key: string]: any }): any | {} {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
-        const dataList: T[] = JSON.parse(storedData)
-        const filteredDataList: T[] = []
+        const dataList: any[] = JSON.parse(storedData)
+        const filteredDataList: any[] = []
         dataList.forEach((ell: any) => {
             for (const [key, value] of Object.entries(filter)) {
                 if (ell[key] == value)
@@ -148,7 +148,7 @@ class Model<T>{
 
     public FindAndUpdate(filter: { [key: string]: any }, data: { [key: string]: any }) {
         const storedData = fs.readFileSync(this.dataPath, 'utf8')
-        const dataList: T[] = JSON.parse(storedData)
+        const dataList: any[] = JSON.parse(storedData)
 
         const foundData = this.findData(dataList, filter)
 
