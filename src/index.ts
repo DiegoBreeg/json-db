@@ -15,9 +15,9 @@ type SchemaConfig = {
 type Schema = { [key: string]: SchemaConfig }
 
 class Model<T>{
-    private dataPath
-    private modelName
-    private schema: Schema
+    public dataPath
+    public modelName
+    public schema: Schema
 
     constructor(modelName: string, schema: Schema) {
         this.modelName = modelName
